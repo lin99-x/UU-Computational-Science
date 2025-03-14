@@ -1,0 +1,9 @@
+PyTorch/1.13.1-foss-2022a-CUDA-11.7.0
+matplotlib/3.5.2
+PyTorch-bundle/1.13.1-foss-2022a-CUDA-11.7.0
+
+# use virtual environment
+module load PyTorch-bundle/1.13.1-foss-2022a-CUDA-11.7.0 matplotlib/3.5.2 OpenCV/4.6.0-foss-2022a-CUDA-11.7.0-contrib tensorboard/2.10.0-foss-2022a
+source mae/bin/activate
+
+pip install --no-cache-dir --no-build-isolation some_module
