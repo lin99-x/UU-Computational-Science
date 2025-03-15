@@ -1,0 +1,27 @@
+version: "3"
+services:
+  ui:
+    build:
+      context: .
+      network: host
+      dockerfile: dockerfiles/ui.Dockerfile
+    restart: always
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+    ports:
+      - "8888:8888"
+  init:
+    build:
+      context: .
+      dockerfile: dockerfiles/init.Dockerfile
+      network: host
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+  pulsar:
+    ports:
+      - "8080:8080"
+      - "6650:6650"
