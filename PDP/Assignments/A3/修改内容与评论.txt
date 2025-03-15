@@ -1,0 +1,28 @@
+其实没必要把有些类型变成double型 
+分通信器的时候用我现在这个是最方便的
+按照chatgpt的内容进行了修改
+global merge里之前的索引i从零开始，而rank0没有向自身通信，所以会一直卡在probe这里 (解决方法:添加了rank0向自身通信)
+比如pivot是5时，对125555划分，按原先算法split point为3，而如果严格按照注释里的约定，split point为2（解决方法:将向左搜索判断句中>改为>=）
+把MPI_Status status;提到了前面
+local merge里大的数那一组合并时合并对象错了，应该从local_array+length_small开始
+local merge报错的原因是local_array的类型前面已经声明过了，这里赋值时又声明了一次。
+在开头分配数据的步骤中处理了数据总数无法被进程数整除的情况（见刚发的邮件）(采用了平均数向下取整分配后，把剩余的数据再分一次给最后一个进程;应该还有其它处理方法，不同方法可能会对性能产生影响)
+free()相关改动:用我自己编的某个小例子测试2与4进程结果正确，8进程时提示"free(): double free detected in tcache 2"，将global merge前的free(recv_array);注释掉就正确，不知道为什么。此后又注释了MPI_Finalize();前的free(local_array);在size == 1的时候，结尾free(final_array)会报错 (解决方法:添加判断if (size>1))
+如果最后评分不在意内存是否释放完毕，这些可以先不管。
+因为注释不能嵌套，为了测试方便，我把一些/* */型的注释改为了//单行注释
+大部分测试例子都正确了，用input10.txt 8进程 pivot选3时结果不对 (done)
+global merge里的wait和后面的barrier是否重复，能否去掉wait?
+编译时的几处warning帮忙改一下 (done)
+还缺最后的写入文件部分与性能测试 (output done check format)
+
+目前代碼parallel quicksort部分全部採用non-blocking方法，但是和使用MPI_Isend+MPI_Recv相比差別不大
+把pivot分出去做單獨的function調用
+
+能想到的問題： workload 應該怎麽平衡？比如有的時候一個local——array裏面只有一個需要傳遞的數據而另一個array可能要傳4個？
+            通信還能不能更加優化？ 根據性能來看overhead還是很嚴重
+            也許C庫裏面的qsort function太好了？（真的想不出來別的理由了）
+
+
+對代碼的改進：一開始用的blocking communication，（MPI_SEND， MPI_Recv）後來改為MPI_Isend+ MPI_Recv， 最後改為MPI_Isend+MPI_Irecv
+            通過MPI_Probe+MPI_get_count得知具體傳來了多少數據，在用MPI_Recv接受，省掉了找具體傳了多少數據的過程
+            
