@@ -1,0 +1,5 @@
+STREAM triad of size      100 : min/avg/max: 0.000921341   0.0010705   0.0012667 seconds or  2.17075 GFlop/s or 0.130245 GB/s
+STREAM triad of size      350 : min/avg/max:   0.0427438   0.0427641   0.0428956 seconds or  2.00614 GFlop/s or 0.034391 GB/s
+STREAM triad of size      600 : min/avg/max:    0.256943     0.25723    0.261903 seconds or  1.68131 GFlop/s or 0.0168131 GB/s
+STREAM triad of size      850 : min/avg/max:     4.03315     4.04012     4.04801 seconds or 0.304539 GFlop/s or 0.00214969 GB/s
+STREAM triad of size     1100 : min/avg/max:     10.4651     10.4815     10.4918 seconds or  0.25437 GFlop/s or 0.00138747 GB/s
