@@ -1,0 +1,8 @@
+den	1241982
+denna	24638
+denne	4031
+det	547225
+han	671048
+hen	35355
+hon	310294
+unique_tweets	2341577

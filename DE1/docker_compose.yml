@@ -1,0 +1,38 @@
+version: '3.9'                    # docker-compose version 3.9
+
+services:                         # services to be run
+  spark-master:                   # service name 
+    image: myspark/first:v0       # image name
+    container_name: spark-master  # container name
+    hostname: sparkmaster         # hostname
+    ports:                        # ports to be exposed   
+      - "8080:8080"               # port 8080 of the container 
+                                  # to be exposed to port 8080
+                                  # of the host
+      - "7077:7077"               # port 7077 of the container
+                                  # to be exposed to port 7077
+                                  # of the host
+    environment:                  # environment variables
+      - SPARK_MODE=master         # SPARK_MODE is set to master
+      - "SPARK_MASTER_PORT=7077"  # SPARK_MASTER_PORT is set to
+                                  # 7077
+      - "SPARK_MASTER_WEBUI_PORT=8080"  
+      # SPARK_MASTER_WEBUI_PORT is set to 8080
+  
+  spark-worker:                   # service name
+    image: myspark/first:v0       # image name
+    container_name: spark-worker  # container name
+    hostname: sparkworker         # hostname
+    depends_on:                   # dependency on spark-master
+      - spark-master           
+    ports:                        # ports to be exposed
+      - 8080
+    environment:                  # environment variables
+      - SPARK_MODE=worker         # SPARK_MODE is set to worker
+      - "SPARK_MASTER_URL=spark://spark-master:7077"    
+      # SPARK_MASTER_URL is set to spark://spark-master:7077
+      - "SPARK_WORKER_WEBUI_PORT=8080" 
+      # SPARK_WORKER_WEBUI_PORT is set to 8080
+
+networks:                         # networks to be created
+  spark-net:                      # network name
